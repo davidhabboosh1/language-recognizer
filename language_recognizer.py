@@ -7,12 +7,15 @@ def main():
 
     languages = get_languages()
 
+    chosen_languages = []
     for i in range(1):
         lang = random.choice(languages)
-        responses.append(respond(co, f'speak in {lang}:\n'))
+        chosen_languages.append(lang)
+        responses.append(respond(co, f'translate \"hello\" to {lang}:\n'))
         
     languages = co.detect_language(responses).results
-    print([f'{responses[i]} -- {lang} (ACTUAL) -- {languages[i].language_name} (PRED)' for i in range(len(responses))])
+    for i in range(len(responses)):
+        print(f'Generated: {responses[i]}\nActual: {chosen_languages[i]}\nPredicted: {languages[i].language_name}\n')
 
 def get_languages():
     with open('languages.txt', 'r') as languages:
@@ -23,7 +26,7 @@ def get_key():
         return key.read()
 
 def respond(generator, prompt):
-    response = response = generator.generate(model='xlarge', prompt=prompt, max_tokens=50, temperature=2, end_sequences=['.', '?', '!'])
+    response = generator.generate(model='xlarge', prompt=prompt, max_tokens=5, temperature=2, end_sequences=['.', '?', '!'])
     return response.generations[0].text
 
 if __name__ == '__main__':
